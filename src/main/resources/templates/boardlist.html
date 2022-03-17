@@ -5,6 +5,17 @@
     <title>게시글 리스트 페이지</title>
 </head>
 
+<!--<script>-->
+<!--    function searchBoard() {-->
+<!--        var form = document.getElementById(searchKeyword);-->
+<!--        if(form.searchKeyword.value == null) {-->
+<!--            alert("검색어를 입력해주세요.");-->
+<!--            form.searchKeyword.focus();-->
+<!--            return false;-->
+<!--        }-->
+<!--    }-->
+<!--</script>-->
+
 <style>
     .layout {
         width: 500px;
@@ -12,10 +23,25 @@
         margin-top: 40px;
     }
 
+    .pagination {
+        height: 30px;
+    }
+
+    .pagination li {
+        float: left;
+        padding: 0 5px;
+        text-align: center;
+        list-style: none;
+    }
+
+    .searchBox {
+        text-align: center;
+
+    }
+
 </style>
 
 <body>
-
     <div class="layout">
         <table>
             <thead>
@@ -33,6 +59,50 @@
                 </tr>
             </tbody>
         </table>
+
+        <div class="pagination" th:with="
+                    start=${(list.number/10)*10 + 1},
+                    end=(${start + 9 < list.totalPages ? start + 9 : list.totalPages})">
+            <ul>
+
+                <!-- 첫번째 페이지로 이동 -->
+                <li th:if="${list.number != 0}">
+                    <a th:href="@{/board/list(page=0, searchKeyword = ${param.searchKeyword})}" th:text="'처음으로'"></a></li>
+                </li>
+
+                <!-- 이전 페이지로 이동 -->
+                <li th:if="${list.number != 0}">
+                    <a th:href="@{/board/list(page=${list.number -1}, searchKeyword = ${param.searchKeyword})}" th:text="'<'"></a>
+                </li>
+
+                <li th:each="page: ${#numbers.sequence(start, end)}"
+                    th:class="${page == list.number + 1} ">
+                    <a th:href="@{/board/list(page=${page -1}, searchKeyword = ${param.searchKeyword})}" th:text="${page}"></a>
+                </li>
+
+                <!-- 다음 페이지로 이동 -->
+                <li th:if="${end < list.totalPages}">
+                    <a th:href="@{/board/list(page=${list.number +1}, searchKeyword = ${param.searchKeyword})}" th:text="'>'"></a>
+                </li>
+
+                <!-- 마지막 페이지로 이동 -->
+                <li th:if="${end < list.totalPages}">
+                    <a th:href="@{/board/list(page=${list.totalPages -1}, searchKeyword = ${param.searchKeyword})}" th:text="'끝으로'"></a></li>
+                </li>
+
+            </ul>
+        </div>
+
+
+
+
+        <form th:action="@{/board/list}" method="get" class="searchBox">
+            <input type="text" name="searchKeyword" th:value="${param.searchKeyword}">
+            <button type="submit">검색</button>
+        </form>
+
+        <button type="button" onclick="location.href='/board/write'">글 작성</button>
+
 
     </div>
 

@@ -12,9 +12,12 @@ import javax.persistence.Id;
 public class Board {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto_increment를 위한 것
     private Integer id;
 
     private String title;
     private String content;
+    private String filename;
+    private String filepath;
+
 }
